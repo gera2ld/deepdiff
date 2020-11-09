@@ -38,18 +38,17 @@
     "types"
   ],
   "devDependencies": {
-    "@babel/register": "^7.10.5",
-    "@gera2ld/plaid": "~2.0.7",
-    "@gera2ld/plaid-common-ts": "^2.0.7",
-    "@gera2ld/plaid-rollup": "~2.0.7",
+    "@babel/register": "^7.12.1",
+    "@gera2ld/plaid": "~2.1.3",
+    "@gera2ld/plaid-common-ts": "^2.1.5",
+    "@gera2ld/plaid-rollup": "~2.1.3",
     "babel-plugin-istanbul": "^6.0.0",
     "del-cli": "^3.0.1",
-    "eslint-config-airbnb-typescript": "^9.0.0",
-    "husky": "^4.2.5",
+    "husky": "^4.3.0",
     "nyc": "^15.1.0",
     "tape": "^5.0.1"
   },
   "dependencies": {
-    "@babel/runtime": "^7.11.2"
+    "@babel/runtime": "^7.12.5"
   }
 }

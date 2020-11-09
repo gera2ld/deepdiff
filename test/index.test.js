@@ -24,4 +24,17 @@ test('deepdiff', t => {
     ]);
     q.end();
   });
+
+  t.test('ignore order of object keys', q => {
+    q.deepEqual(deepdiff({
+      a: 1,
+      b: 2,
+      c: 3,
+    }, {
+      c: 3,
+      b: 2,
+      a: 1,
+    }), []);
+    q.end();
+  });
 });
