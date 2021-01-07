@@ -1,12 +1,22 @@
-const OP_REPLACE = 'replace';
-const OP_DELETE = 'delete';
-const OP_INSERT = 'insert';
+export enum DiffOperation {
+  REPLACE = 'replace',
+  DELETE = 'delete',
+  INSERT = 'insert',
+}
 
-interface DiffItem {
-  op: string;
+export type DiffItem<T> = {
+  op: DiffOperation.DELETE;
   path: string;
-  oldVal?: any;
-  newVal?: any;
+  oldVal: T;
+} | {
+  op: DiffOperation.INSERT;
+  path: string;
+  newVal: T;
+} | {
+  op: DiffOperation.REPLACE;
+  path: string;
+  oldVal: T;
+  newVal: T;
 }
 
 type DataType = 'array' | 'null' | 'object' | 'string' | 'undefined' | 'number' | 'boolean' | 'function' | 'symbol' ;
@@ -46,29 +56,29 @@ function difference<T>(set1: Set<T>, set2: Set<T>): Set<T> {
   return result;
 }
 
-function diffObject(obj1: object, obj2: object, path: string): DiffItem[] {
+function diffObject<T>(obj1: object, obj2: object, path: string): DiffItem<T>[] {
   const keys1 = new Set(Object.keys(obj1));
   const keys2 = new Set(Object.keys(obj2));
   const only1 = difference(keys1, keys2);
   const only2 = difference(keys2, keys1);
   const common = intersection(keys1, keys2);
-  const result: DiffItem[] = [];
+  const result: DiffItem<T>[] = [];
   for (const key of only1) {
     result.push({
-      op: OP_DELETE,
+      op: DiffOperation.DELETE,
       path: `${path}/${key}`,
       oldVal: obj1[key],
     });
   }
   for (const key of only2) {
     result.push({
-      op: OP_INSERT,
+      op: DiffOperation.INSERT,
       path: `${path}/${key}`,
       newVal: obj2[key],
     });
   }
   for (const key of common) {
-    result.push(...deepdiff(obj1[key], obj2[key], `${path}/${key}`));
+    result.push(...deepdiff<T>(obj1[key], obj2[key], `${path}/${key}`));
   }
   return result;
 }
@@ -97,23 +107,23 @@ export function findCommonItems<T>(arr1: T[], arr2: T[]): [number, number][] {
   return precache[arr2.length - 1];
 }
 
-function diffArray(obj1: any[], obj2: any[], path: string): DiffItem[] {
+function diffArray<T>(obj1: any[], obj2: any[], path: string): DiffItem<T>[] {
   const hash1 = obj1.map(hashObject);
   const hash2 = obj2.map(hashObject);
   const common = findCommonItems(hash1, hash2);
   common.push([obj1.length, obj2.length]);
-  const result: DiffItem[] = [];
+  const result: DiffItem<T>[] = [];
   let i1 = 0;
   let j1 = 0;
   for (const [i2, j2] of common) {
     while (i1 < i2 && j1 < j2) {
-      result.push(...deepdiff(obj1[i1], obj2[j1], `${path}/${i1}`));
+      result.push(...deepdiff<T>(obj1[i1], obj2[j1], `${path}/${i1}`));
       i1 += 1;
       j1 += 1;
     }
     while (i1 < i2) {
       result.push({
-        op: OP_DELETE,
+        op: DiffOperation.DELETE,
         path: `${path}/${i1}`,
         oldVal: obj1[i1],
       });
@@ -121,7 +131,7 @@ function diffArray(obj1: any[], obj2: any[], path: string): DiffItem[] {
     }
     while (j1 < j2) {
       result.push({
-        op: OP_INSERT,
+        op: DiffOperation.INSERT,
         path: `${path}/${i1}`,
         newVal: obj2[j1],
       });
@@ -133,17 +143,17 @@ function diffArray(obj1: any[], obj2: any[], path: string): DiffItem[] {
   return result;
 }
 
-export function deepdiff(obj1: any, obj2: any, path = ''): DiffItem[] {
+export function deepdiff<T = any>(obj1: any, obj2: any, path = ''): DiffItem<T>[] {
   const type1 = getType(obj1);
   const type2 = getType(obj2);
-  const result: DiffItem[] = [];
+  const result: DiffItem<T>[] = [];
   if (type1 === type2 && type1 === 'object') {
-    result.push(...diffObject(obj1, obj2, path));
+    result.push(...diffObject<T>(obj1, obj2, path));
   } else if (type1 === type2 && type1 === 'array') {
-    result.push(...diffArray(obj1, obj2, path));
+    result.push(...diffArray<T>(obj1, obj2, path));
   } else if (obj1 !== obj2) {
     result.push({
-      op: OP_REPLACE,
+      op: DiffOperation.REPLACE,
       path,
       oldVal: obj1,
       newVal: obj2,
