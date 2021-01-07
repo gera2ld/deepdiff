@@ -17,9 +17,9 @@ export type DiffItem<T> = {
   path: string;
   oldVal: T;
   newVal: T;
-}
+};
 
-type DataType = 'array' | 'null' | 'object' | 'string' | 'undefined' | 'number' | 'boolean' | 'function' | 'symbol' ;
+type DataType = 'array' | 'null' | 'object' | 'string' | 'undefined' | 'number' | 'boolean' | 'function' | 'symbol';
 
 function getType(obj: any): DataType {
   if (Array.isArray(obj)) return 'array';
