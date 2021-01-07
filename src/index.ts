@@ -4,7 +4,7 @@ export enum DiffOperation {
   INSERT = 'insert',
 }
 
-export type DiffItem<T> = {
+export type DiffItem<T = any> = {
   op: DiffOperation.DELETE;
   path: string;
   oldVal: T;
