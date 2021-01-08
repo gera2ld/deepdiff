@@ -4,7 +4,5 @@ module.exports = {
     '@babel/preset-typescript',
   ],
   plugins: [
-
-    process.env.BABEL_ENV === 'test' && 'istanbul',
   ].filter(Boolean),
 };

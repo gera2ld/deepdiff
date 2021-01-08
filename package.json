@@ -16,9 +16,9 @@
     "prebuild": "npm run ci && npm run clean",
     "prepublishOnly": "npm run build",
     "ci": "npm run lint && npm run test",
-    "lint": "eslint --ext .ts .",
+    "lint": "eslint --ext .ts src",
     "build": "tsc && npm run build:js",
-    "test": "cross-env BABEL_ENV=test tape -r ./test/mock/register 'test/**/*.test.js'",
+    "test": "cross-env BABEL_ENV=test jest test",
     "cov": "nyc --reporter=text --reporter=html npm test",
     "cov:open": "open coverage/index.html"
   },
@@ -39,16 +39,13 @@
     "types"
   ],
   "devDependencies": {
-    "@babel/register": "^7.12.10",
-    "@gera2ld/plaid": "~2.1.7",
-    "@gera2ld/plaid-common-ts": "~2.1.5",
-    "@gera2ld/plaid-rollup": "~2.1.3",
-    "babel-plugin-istanbul": "^6.0.0",
+    "@gera2ld/plaid": "~2.2.0",
+    "@gera2ld/plaid-common-ts": "~2.2.0",
+    "@gera2ld/plaid-rollup": "~2.2.0",
+    "@gera2ld/plaid-test": "~2.2.0",
     "cross-env": "^7.0.3",
     "del-cli": "^3.0.1",
-    "husky": "^4.3.7",
-    "nyc": "^15.1.0",
-    "tape": "^5.1.1"
+    "husky": "^4.3.7"
   },
   "dependencies": {
     "@babel/runtime": "^7.12.5"
