@@ -15,12 +15,22 @@ it('should equal', () => {
   ]);
 });
 
+it('should support empty diff diff', () => {
+  const diff = deepdiff([1, 2, 3], []);
+  expect(diff).toMatchSnapshot();
+});
+
 it('find common items', () => {
   const common = findCommonItems([1, 2, 3], [2, 3, 4]);
   expect(common).toEqual([
     [1, 0],
     [2, 1],
   ]);
+});
+
+it('find common items for empty array', () => {
+  const common = findCommonItems([1, 2, 3], []);
+  expect(common).toEqual([]);
 });
 
 it('ignore order of object keys', () => {

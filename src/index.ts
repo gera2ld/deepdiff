@@ -104,7 +104,7 @@ export function findCommonItems<T>(arr1: T[], arr2: T[]): [number, number][] {
     precache = cache;
     cache = [];
   }
-  return precache[arr2.length - 1];
+  return precache[arr2.length - 1] || [];
 }
 
 function diffArray<T>(obj1: any[], obj2: any[], path: string): DiffItem<T>[] {

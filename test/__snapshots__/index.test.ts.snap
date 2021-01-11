@@ -1,0 +1,21 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`should support empty diff diff 1`] = `
+Array [
+  Object {
+    "oldVal": 1,
+    "op": "delete",
+    "path": "/0",
+  },
+  Object {
+    "oldVal": 2,
+    "op": "delete",
+    "path": "/1",
+  },
+  Object {
+    "oldVal": 3,
+    "op": "delete",
+    "path": "/2",
+  },
+]
+`;
