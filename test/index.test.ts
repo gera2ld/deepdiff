@@ -1,4 +1,5 @@
-import { findCommonItems, deepdiff } from '../src';
+import { deepdiff } from '../src';
+import { findCommonItems } from '../src/deepdiff';
 
 it('should equal', () => {
   const diff = deepdiff({
@@ -46,4 +47,18 @@ it('ignore order of object keys', () => {
     a: 1,
   });
   expect(diff).toEqual([]);
+});
+
+it('ignore order of nested object keys', () => {
+  const diff = deepdiff([
+    1,
+    { a: { d: 1, f: 2 }, b: 2, c: 3 },
+  ], [
+    { c: 3, b: 2, a: { f: 2, d: 1 } },
+    2,
+  ]);
+  expect(diff).toEqual([
+    { op: 'delete', path: '/0', oldVal: 1 },
+    { op: 'insert', path: '/2', newVal: 2 },
+  ]);
 });
