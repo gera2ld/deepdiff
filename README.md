@@ -29,4 +29,16 @@ console.log(deepdiff({
 //   { op: 'insert', path: '/a/3', newVal: 4 },
 //   { op: 'replace', path: '/b', oldVal: 1, newVal: 2 },
 // ]
+
+// Custom hashObject
+console.log(deepdiff({
+  a: [1, 2, 3, 5],
+  b: 1,
+}, {
+  a: [2, 3, 4, 5],
+  b: 2,
+}, {
+  hashObject: () => 'all same hash',
+}));
+// -> []
 ```
