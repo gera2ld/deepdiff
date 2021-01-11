@@ -1,4 +1,4 @@
-import { findCommonItems, deepdiff } from '#';
+import { findCommonItems, deepdiff } from '../src';
 
 it('should equal', () => {
   const diff = deepdiff({
@@ -11,7 +11,9 @@ it('should equal', () => {
   expect(diff).toEqual([
     { op: 'delete', path: '/a/0', oldVal: 1 },
     { op: 'insert', path: '/a/3', newVal: 4 },
-    { op: 'replace', path: '/b', oldVal: 1, newVal: 2 },
+    {
+      op: 'replace', path: '/b', oldVal: 1, newVal: 2,
+    },
   ]);
 });
 
