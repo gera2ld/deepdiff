@@ -1,5 +1,5 @@
 import { deepdiff } from '../src';
-import { findCommonItems } from '../src/deepdiff';
+import { findCommonItems } from '../src/diff';
 
 it('should equal', () => {
   const diff = deepdiff({
@@ -61,4 +61,15 @@ it('ignore order of nested object keys', () => {
     { op: 'delete', path: '/0', oldVal: 1 },
     { op: 'insert', path: '/2', newVal: 2 },
   ]);
+});
+
+it('allow custom hashObject', () => {
+  const diff = deepdiff([
+    1, 2, 3,
+  ], [
+    4, 5, 6,
+  ], {
+    hashObject: () => '',
+  });
+  expect(diff).toEqual([]);
 });

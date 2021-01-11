@@ -21,6 +21,10 @@ export type DiffItem<T = any> = {
 
 export type DataType = 'array' | 'null' | 'object' | 'string' | 'undefined' | 'number' | 'boolean' | 'function' | 'symbol';
 
+export type DiffOptions = {
+  hashObject: (obj: any) => string;
+};
+
 export function getType(obj: any): DataType {
   if (Array.isArray(obj)) return 'array';
   if (obj === null) return 'null';
