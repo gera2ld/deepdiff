@@ -99,7 +99,12 @@ function diffArray<T>(obj1: T[], obj2: T[], path: string, options: DiffOptions):
   return result;
 }
 
-export function diffAny<T>(obj1: T, obj2: T, path: string, options: DiffOptions): DiffItem<T>[] {
+export function diffAny<T>(
+  obj1: any,
+  obj2: any,
+  path: string,
+  options: DiffOptions,
+): DiffItem<T>[] {
   const type1 = getType(obj1);
   const type2 = getType(obj2);
   const result: DiffItem<T>[] = [];

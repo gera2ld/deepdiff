@@ -1,4 +1,4 @@
-import { deepdiff } from '../src';
+import { deepdiff, DiffOperation, DiffItem } from '../src';
 import { findCommonItems } from '../src/diff';
 
 it('should equal', () => {
@@ -72,4 +72,14 @@ it('allow custom hashObject', () => {
     hashObject: () => '',
   });
   expect(diff).toEqual([]);
+});
+
+it('should get right type', () => {
+  const diff = deepdiff(['a', 'b'], ['a', 'c'], {
+    hashObject: (item: string) => item,
+  })[0] as DiffItem<string>;
+  expect(diff.op === DiffOperation.REPLACE).toBe(true);
+  if (diff.op === DiffOperation.REPLACE) {
+    expect(diff.oldVal.split('')).toEqual(['b']);
+  }
 });
