@@ -17,7 +17,7 @@
     "prepublishOnly": "npm run build",
     "ci": "npm run lint && npm run test",
     "lint": "eslint --ext .ts src test",
-    "build": "tsc && npm run build:js",
+    "build": "tsc -p tsconfig.prod.json && npm run build:js",
     "test": "cross-env BABEL_ENV=test jest test",
     "cov": "nyc --reporter=text --reporter=html npm test",
     "cov:open": "open coverage/index.html"
