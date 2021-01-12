@@ -1,7 +1,7 @@
 import { DiffOptions, DiffItem, hashObject } from './util';
 import { diffAny } from './diff';
 
-export { DiffItem, DiffOperation } from './util';
+export type { DiffItem, DiffOperation } from './util';
 
 const defaultOptions: DiffOptions = {
   hashObject,
