@@ -1,15 +1,17 @@
 import { DiffOptions, DiffItem, hashObject } from './util';
 import { diffAny } from './diff';
 
+export { DiffItem, DiffOperation } from './util';
+
 const defaultOptions: DiffOptions = {
   hashObject,
 };
 
-export function deepdiff<T = any>(
-  obj1: T,
-  obj2: T,
-  options: Partial<DiffOptions>,
-): DiffItem<T>[] {
+export function deepdiff(
+  obj1: any,
+  obj2: any,
+  options?: Partial<DiffOptions>,
+): DiffItem[] {
   const mergedOptions: DiffOptions = {
     ...defaultOptions,
     ...options,

@@ -3,18 +3,18 @@ import {
   difference, intersection, getType, prestringify,
 } from './util';
 
-function diffObject<T>(
+function diffObject(
   obj1: object,
   obj2: object,
   path: string,
   options: DiffOptions,
-): DiffItem<T>[] {
+): DiffItem[] {
   const keys1 = new Set(Object.keys(obj1));
   const keys2 = new Set(Object.keys(obj2));
   const only1 = difference(keys1, keys2);
   const only2 = difference(keys2, keys1);
   const common = intersection(keys1, keys2);
-  const result: DiffItem<T>[] = [];
+  const result: DiffItem[] = [];
   for (const key of only1) {
     result.push({
       op: DiffOperation.DELETE,
@@ -30,7 +30,7 @@ function diffObject<T>(
     });
   }
   for (const key of common) {
-    result.push(...diffAny<T>(obj1[key], obj2[key], `${path}/${key}`, options));
+    result.push(...diffAny(obj1[key], obj2[key], `${path}/${key}`, options));
   }
   return result;
 }
@@ -59,7 +59,7 @@ export function findCommonItems<T>(arr1: T[], arr2: T[]): [number, number][] {
   return precache[arr2.length - 1] || [];
 }
 
-function diffArray<T>(obj1: T[], obj2: T[], path: string, options: DiffOptions): DiffItem<T>[] {
+function diffArray<T>(obj1: T[], obj2: T[], path: string, options: DiffOptions): DiffItem[] {
   if (typeof (obj1 as any).toJSON !== 'function') {
     obj1 = prestringify(obj1);
     obj2 = prestringify(obj2);
@@ -68,12 +68,12 @@ function diffArray<T>(obj1: T[], obj2: T[], path: string, options: DiffOptions):
   const hash2 = obj2.map(options.hashObject);
   const common = findCommonItems(hash1, hash2);
   common.push([obj1.length, obj2.length]);
-  const result: DiffItem<T>[] = [];
+  const result: DiffItem[] = [];
   let i1 = 0;
   let j1 = 0;
   for (const [i2, j2] of common) {
     while (i1 < i2 && j1 < j2) {
-      result.push(...diffAny<T>(obj1[i1], obj2[j1], `${path}/${i1}`, options));
+      result.push(...diffAny(obj1[i1], obj2[j1], `${path}/${i1}`, options));
       i1 += 1;
       j1 += 1;
     }
@@ -99,14 +99,19 @@ function diffArray<T>(obj1: T[], obj2: T[], path: string, options: DiffOptions):
   return result;
 }
 
-export function diffAny<T>(obj1: T, obj2: T, path: string, options: DiffOptions): DiffItem<T>[] {
+export function diffAny(
+  obj1: any,
+  obj2: any,
+  path: string,
+  options: DiffOptions,
+): DiffItem[] {
   const type1 = getType(obj1);
   const type2 = getType(obj2);
-  const result: DiffItem<T>[] = [];
+  const result: DiffItem[] = [];
   if (type1 === type2 && type1 === 'object') {
-    result.push(...diffObject<T>(obj1 as any, obj2 as any, path, options));
+    result.push(...diffObject(obj1 as any, obj2 as any, path, options));
   } else if (type1 === type2 && type1 === 'array') {
-    result.push(...diffArray<T>(obj1 as any, obj2 as any, path, options));
+    result.push(...diffArray(obj1 as any, obj2 as any, path, options));
   } else if (obj1 !== obj2) {
     result.push({
       op: DiffOperation.REPLACE,
