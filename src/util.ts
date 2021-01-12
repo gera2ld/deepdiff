@@ -4,19 +4,11 @@ export enum DiffOperation {
   INSERT = 'insert',
 }
 
-export type DiffItem<T = any> = {
-  op: DiffOperation.DELETE;
+export type DiffItem = {
+  op: DiffOperation;
   path: string;
-  oldVal: T;
-} | {
-  op: DiffOperation.INSERT;
-  path: string;
-  newVal: T;
-} | {
-  op: DiffOperation.REPLACE;
-  path: string;
-  oldVal: T;
-  newVal: T;
+  oldVal?: any;
+  newVal?: any;
 };
 
 export type DataType = 'array' | 'null' | 'object' | 'string' | 'undefined' | 'number' | 'boolean' | 'function' | 'symbol';

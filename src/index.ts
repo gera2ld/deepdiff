@@ -11,7 +11,7 @@ export function deepdiff(
   obj1: any,
   obj2: any,
   options?: Partial<DiffOptions>,
-): DiffItem<any>[] {
+): DiffItem[] {
   const mergedOptions: DiffOptions = {
     ...defaultOptions,
     ...options,
