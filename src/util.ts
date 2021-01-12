@@ -25,29 +25,48 @@ export function getType(obj: any): DataType {
   return type;
 }
 
-function makeToJSON(target: any): any {
-  const value = JSON.stringify(target);
-  Object.defineProperty(target, 'toJSON', { value: () => value, enumerable: false });
+const HASH_KEY = Symbol('deepdiff:hash');
+
+export function stringify(obj: any): string {
+  return obj?.[HASH_KEY] || JSON.stringify(obj);
+}
+
+function makeStringified(target: any, value: string): any {
+  target[HASH_KEY] = value;
   return target;
 }
 
 export function prestringify(obj: any): any {
   if (Array.isArray(obj)) {
     const target = obj.map(prestringify);
-    return makeToJSON(target);
+    const tokens = ['['];
+    for (let i = 0; i < target.length; i += 1) {
+      if (i) tokens.push(',');
+      tokens.push(stringify(target[i]));
+    }
+    tokens.push(']');
+    const value = tokens.join('');
+    return makeStringified(target, value);
   }
   if (obj && typeof obj === 'object') {
     const target = {};
-    Object.keys(obj).sort().forEach(key => {
+    const keys = Object.keys(obj).sort();
+    const tokens = ['{'];
+    for (let i = 0; i < keys.length; i += 1) {
+      const key = keys[i];
       target[key] = prestringify(obj[key]);
-    });
-    return makeToJSON(target);
+      if (i) tokens.push(',');
+      tokens.push(JSON.stringify(key), ':', stringify(target[key]));
+    }
+    tokens.push('}');
+    const value = tokens.join('');
+    return makeStringified(target, value);
   }
   return obj;
 }
 
 export function hashObject(obj: any): string {
-  return JSON.stringify(obj);
+  return stringify(obj);
 }
 
 export function intersection<T>(set1: Set<T>, set2: Set<T>): Set<T> {
