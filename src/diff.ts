@@ -1,6 +1,6 @@
 import {
   DiffOperation, DiffItem, DiffOptions,
-  difference, intersection, getType, prestringify,
+  difference, intersection, getType,
 } from './util';
 
 function diffObject(
@@ -60,10 +60,6 @@ export function findCommonItems<T>(arr1: T[], arr2: T[]): [number, number][] {
 }
 
 function diffArray<T>(obj1: T[], obj2: T[], path: string, options: DiffOptions): DiffItem[] {
-  if (typeof (obj1 as any).toJSON !== 'function') {
-    obj1 = prestringify(obj1);
-    obj2 = prestringify(obj2);
-  }
   const hash1 = obj1.map(options.hashObject);
   const hash2 = obj2.map(options.hashObject);
   const common = findCommonItems(hash1, hash2);

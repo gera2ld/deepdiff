@@ -1,10 +1,13 @@
-import { DiffOptions, DiffItem, hashObject } from './util';
+import {
+  DiffOptions, DiffItem, hashObject, prestringify,
+} from './util';
 import { diffAny } from './diff';
 
 export type { DiffItem, DiffOperation } from './util';
 
 const defaultOptions: DiffOptions = {
   hashObject,
+  prestringify: false,
 };
 
 export function deepdiff(
@@ -16,5 +19,9 @@ export function deepdiff(
     ...defaultOptions,
     ...options,
   };
+  if (mergedOptions.prestringify) {
+    prestringify(obj1);
+    prestringify(obj2);
+  }
   return diffAny(obj1, obj2, '', mergedOptions);
 }

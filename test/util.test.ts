@@ -10,9 +10,10 @@ it('equal to JSON.stringify', () => {
       },
     },
   };
-  const obj2 = prestringify(obj1);
-  const JSON_stringify = JSON.stringify;
-  JSON.stringify = () => { throw new Error('Should not call this') };
-  expect(stringify(obj2)).toEqual(JSON_stringify(obj1));
-  JSON.stringify = JSON_stringify;
+  const obj2 = JSON.parse(JSON.stringify(obj1));
+  prestringify(obj2);
+  const jsonStringify = JSON.stringify;
+  JSON.stringify = () => { throw new Error('Should not call this'); };
+  expect(stringify(obj2)).toEqual(jsonStringify(obj1));
+  JSON.stringify = jsonStringify;
 });

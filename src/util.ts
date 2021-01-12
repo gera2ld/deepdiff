@@ -15,6 +15,7 @@ export type DataType = 'array' | 'null' | 'object' | 'string' | 'undefined' | 'n
 
 export type DiffOptions = {
   hashObject: (obj: any) => string;
+  prestringify: boolean;
 };
 
 export function getType(obj: any): DataType {
@@ -25,7 +26,7 @@ export function getType(obj: any): DataType {
   return type;
 }
 
-const HASH_KEY = Symbol('deepdiff:hash');
+export const HASH_KEY = Symbol('deepdiff:hash');
 
 export function stringify(obj: any): string {
   return obj?.[HASH_KEY] || JSON.stringify(obj);
@@ -36,33 +37,33 @@ function makeStringified(target: any, value: string): any {
   return target;
 }
 
-export function prestringify(obj: any): any {
+export function prestringify(obj: any): void {
   if (Array.isArray(obj)) {
-    const target = obj.map(prestringify);
     const tokens = ['['];
-    for (let i = 0; i < target.length; i += 1) {
+    for (let i = 0; i < obj.length; i += 1) {
       if (i) tokens.push(',');
-      tokens.push(stringify(target[i]));
+      const value = obj[i];
+      prestringify(value);
+      tokens.push(stringify(value));
     }
     tokens.push(']');
-    const value = tokens.join('');
-    return makeStringified(target, value);
+    const str = tokens.join('');
+    makeStringified(obj, str);
   }
   if (obj && typeof obj === 'object') {
-    const target = {};
     const keys = Object.keys(obj).sort();
     const tokens = ['{'];
     for (let i = 0; i < keys.length; i += 1) {
       const key = keys[i];
-      target[key] = prestringify(obj[key]);
+      const value = obj[key];
+      prestringify(value);
       if (i) tokens.push(',');
-      tokens.push(JSON.stringify(key), ':', stringify(target[key]));
+      tokens.push(JSON.stringify(key), ':', stringify(value));
     }
     tokens.push('}');
-    const value = tokens.join('');
-    return makeStringified(target, value);
+    const str = tokens.join('');
+    makeStringified(obj, str);
   }
-  return obj;
 }
 
 export function hashObject(obj: any): string {

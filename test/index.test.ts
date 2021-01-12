@@ -56,7 +56,9 @@ it('ignore order of nested object keys', () => {
   ], [
     { c: 3, b: 2, a: { f: 2, d: 1 } },
     2,
-  ]);
+  ], {
+    prestringify: true,
+  });
   expect(diff).toEqual([
     { op: 'delete', path: '/0', oldVal: 1 },
     { op: 'insert', path: '/2', newVal: 2 },
