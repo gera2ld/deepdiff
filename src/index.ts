@@ -1,12 +1,10 @@
-import {
-  DiffOptions, DiffItem, hashObject, prestringify,
-} from './util';
 import { diffAny } from './diff';
+import { IDiffItem, IDiffOptions, hashObject, prestringify } from './util';
 
-export type { DiffItem } from './util';
-export { DiffOperation } from './util';
+export { findCommonItems } from './diff';
+export { DiffOperation, type IDiffItem } from './util';
 
-const defaultOptions: DiffOptions = {
+const defaultOptions: IDiffOptions = {
   hashObject,
   prestringify: false,
 };
@@ -14,9 +12,9 @@ const defaultOptions: DiffOptions = {
 export function deepdiff(
   obj1: any,
   obj2: any,
-  options?: Partial<DiffOptions>,
-): DiffItem[] {
-  const mergedOptions: DiffOptions = {
+  options?: Partial<IDiffOptions>
+): IDiffItem[] {
+  const mergedOptions: IDiffOptions = {
     ...defaultOptions,
     ...options,
   };

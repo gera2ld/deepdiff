@@ -4,22 +4,17 @@
   "description": "",
   "author": "",
   "license": "MIT",
-  "husky": {
-    "hooks": {
-      "pre-push": "npm run lint"
-    }
-  },
   "scripts": {
+    "prepare": "husky || true",
     "dev": "rollup -wc rollup.conf.js",
     "clean": "del dist types",
     "build:js": "rollup -c rollup.conf.js",
-    "prebuild": "npm run ci && npm run clean",
-    "prepublishOnly": "npm run build",
-    "ci": "npm run lint && npm run test",
+    "prebuild": "pnpm lint && pnpm test && pnpm clean",
+    "prepublishOnly": "pnpm build",
     "lint": "eslint --ext .ts src test",
-    "build": "tsc -p tsconfig.prod.json && npm run build:js",
-    "test": "cross-env BABEL_ENV=test jest test",
-    "cov": "nyc --reporter=text --reporter=html npm test",
+    "build": "tsc -p tsconfig.prod.json && pnpm build:js",
+    "test": "jest test",
+    "cov": "nyc --reporter=text --reporter=html pnpm test",
     "cov:open": "open coverage/index.html"
   },
   "publishConfig": {
@@ -32,23 +27,29 @@
       "src/**"
     ]
   },
-  "main": "dist/index.common.js",
-  "module": "dist/index.esm.js",
+  "main": "dist/index.js",
+  "module": "dist/index.mjs",
   "files": [
     "dist",
     "types"
   ],
   "devDependencies": {
-    "@gera2ld/plaid": "~2.2.0",
-    "@gera2ld/plaid-common-ts": "~2.2.0",
-    "@gera2ld/plaid-rollup": "~2.2.0",
-    "@gera2ld/plaid-test": "~2.2.0",
-    "@types/jest": "^26.0.20",
+    "@gera2ld/plaid": "~2.7.0",
+    "@gera2ld/plaid-rollup": "~2.7.0",
+    "@gera2ld/plaid-test": "~2.6.0",
+    "@types/jest": "^29.5.14",
     "cross-env": "^7.0.3",
-    "del-cli": "^3.0.1",
-    "husky": "^4.3.7"
+    "del-cli": "^6.0.0",
+    "husky": "^9.1.7",
+    "lint-staged": "^15.2.11"
   },
   "dependencies": {
-    "@babel/runtime": "^7.12.5"
+    "@babel/runtime": "^7.26.0"
+  },
+  "lint-staged": {
+    "*.ts": [
+      "eslint --fix",
+      "prettier -w"
+    ]
   }
 }

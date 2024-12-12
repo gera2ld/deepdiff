@@ -1,72 +1,38 @@
-const {
-  defaultOptions,
-  getRollupExternal,
-  getRollupPlugins,
-  loadConfigSync,
-  rollupMinify,
-} = require('@gera2ld/plaid');
-const pkg = require('./package.json');
+import { defineExternal, definePlugins } from '@gera2ld/plaid-rollup';
+import { defineConfig } from 'rollup';
+import pkg from './package.json' with { type: 'json' };
 
-const DIST = defaultOptions.distDir;
-const FILENAME = 'index';
-const BANNER = `/*! ${pkg.name} v${pkg.version} | ${pkg.license} License */`;
+const banner = `/*! ${pkg.name} v${pkg.version} | ${pkg.license} License */`;
 
-const external = getRollupExternal();
-const bundleOptions = {
-  extend: true,
-  esModule: false,
-};
-const postcssConfig = loadConfigSync('postcss') || require('@gera2ld/plaid/config/postcssrc');
-const postcssOptions = {
-  ...postcssConfig,
-  inject: false,
-  minimize: true,
-};
-const rollupConfig = [
+const external = defineExternal(
+  Object.keys({ ...pkg.dependencies, ...pkg.devDependencies }),
+);
+
+export default defineConfig([
   {
-    input: {
-      input: 'src/index.ts',
-      plugins: getRollupPlugins({
-        extensions: defaultOptions.extensions,
-        postcss: postcssOptions,
-      }),
-      external,
-    },
-    output: {
-      format: 'cjs',
-      file: `${DIST}/${FILENAME}.common.js`,
-    },
-  },
-  {
-    input: {
-      input: 'src/index.ts',
-      plugins: getRollupPlugins({
-        esm: true,
-        extensions: defaultOptions.extensions,
-        postcss: postcssOptions,
-      }),
-      external,
-    },
+    input: 'src/index.ts',
+    plugins: definePlugins({
+      esm: true,
+      minimize: false,
+    }),
+    external,
     output: {
       format: 'esm',
-      file: `${DIST}/${FILENAME}.esm.js`,
+      file: `dist/index.mjs`,
+      banner,
     },
   },
-];
-
-rollupConfig.forEach((item) => {
-  item.output = {
-    indent: false,
-    // If set to false, circular dependencies and live bindings for external imports won't work
-    externalLiveBindings: false,
-    ...item.output,
-    ...BANNER && {
-      banner: BANNER,
+  {
+    input: 'src/index.ts',
+    plugins: definePlugins({
+      esm: true,
+      minimize: false,
+    }),
+    external,
+    output: {
+      format: 'cjs',
+      file: `dist/index.js`,
+      banner,
     },
-  };
-});
-
-module.exports = rollupConfig.map(({ input, output }) => ({
-  ...input,
-  output,
-}));
+  },
+]);

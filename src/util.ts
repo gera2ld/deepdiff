@@ -4,21 +4,30 @@ export enum DiffOperation {
   INSERT = 'insert',
 }
 
-export type DiffItem = {
+export type IDiffItem = {
   op: DiffOperation;
   path: string;
   oldVal?: any;
   newVal?: any;
 };
 
-export type DataType = 'array' | 'null' | 'object' | 'string' | 'undefined' | 'number' | 'boolean' | 'function' | 'symbol';
+export type IDataType =
+  | 'array'
+  | 'null'
+  | 'object'
+  | 'string'
+  | 'undefined'
+  | 'number'
+  | 'boolean'
+  | 'function'
+  | 'symbol';
 
-export type DiffOptions = {
+export type IDiffOptions = {
   hashObject: (obj: any) => string;
   prestringify: boolean;
 };
 
-export function getType(obj: any): DataType {
+export function getType(obj: any): IDataType {
   if (Array.isArray(obj)) return 'array';
   if (obj === null) return 'null';
   let type = typeof obj;

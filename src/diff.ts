@@ -1,20 +1,24 @@
 import {
-  DiffOperation, DiffItem, DiffOptions,
-  difference, intersection, getType,
+  DiffOperation,
+  IDiffItem,
+  IDiffOptions,
+  difference,
+  getType,
+  intersection,
 } from './util';
 
-function diffObject(
+export function diffObject(
   obj1: object,
   obj2: object,
   path: string,
-  options: DiffOptions,
-): DiffItem[] {
+  options: IDiffOptions
+): IDiffItem[] {
   const keys1 = new Set(Object.keys(obj1));
   const keys2 = new Set(Object.keys(obj2));
   const only1 = difference(keys1, keys2);
   const only2 = difference(keys2, keys1);
   const common = intersection(keys1, keys2);
-  const result: DiffItem[] = [];
+  const result: IDiffItem[] = [];
   for (const key of only1) {
     result.push({
       op: DiffOperation.DELETE,
@@ -46,7 +50,7 @@ export function findCommonItems<T>(arr1: T[], arr2: T[]): [number, number][] {
     for (let j = 0; j < arr2.length; j += 1) {
       let best: [number, number][] = [];
       if (arr1[i] === arr2[j]) {
-        best = getMaxArray(best, [...precache[j - 1] || [], [i, j]]);
+        best = getMaxArray(best, [...(precache[j - 1] || []), [i, j]]);
       } else {
         best = getMaxArray(best, cache[j - 1] || []);
         best = getMaxArray(best, precache[j] || []);
@@ -59,12 +63,17 @@ export function findCommonItems<T>(arr1: T[], arr2: T[]): [number, number][] {
   return precache[arr2.length - 1] || [];
 }
 
-function diffArray<T>(obj1: T[], obj2: T[], path: string, options: DiffOptions): DiffItem[] {
+export function diffArray<T>(
+  obj1: T[],
+  obj2: T[],
+  path: string,
+  options: IDiffOptions
+): IDiffItem[] {
   const hash1 = obj1.map(options.hashObject);
   const hash2 = obj2.map(options.hashObject);
   const common = findCommonItems(hash1, hash2);
   common.push([obj1.length, obj2.length]);
-  const result: DiffItem[] = [];
+  const result: IDiffItem[] = [];
   let i1 = 0;
   let j1 = 0;
   for (const [i2, j2] of common) {
@@ -99,11 +108,11 @@ export function diffAny(
   obj1: any,
   obj2: any,
   path: string,
-  options: DiffOptions,
-): DiffItem[] {
+  options: IDiffOptions
+): IDiffItem[] {
   const type1 = getType(obj1);
   const type2 = getType(obj2);
-  const result: DiffItem[] = [];
+  const result: IDiffItem[] = [];
   if (type1 === type2 && type1 === 'object') {
     result.push(...diffObject(obj1 as any, obj2 as any, path, options));
   } else if (type1 === type2 && type1 === 'array') {
